@@ -1,0 +1,6 @@
+{
+  "name": "ميثاق - Mithaq",
+  "description": "منصة ميثاق الأسرية للاستشارات والتنمية والدعم النفسي - Enterprise Family Counseling Platform",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
