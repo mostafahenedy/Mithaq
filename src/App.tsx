@@ -3,6 +3,13 @@ import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { CounselingModule } from './components/CounselingModule';
 import { AIAssistantView } from './components/AIAssistantView';
+import { CompanionJourney } from './components/CompanionJourney';
+import { FamilyDashboard } from './components/FamilyDashboard';
+import { RelationshipAnalysis } from './components/RelationshipAnalysis';
+import { CouplesMode } from './components/CouplesMode';
+import { ChildProfileModule } from './components/ChildProfileModule';
+import { FamilyTimeline } from './components/FamilyTimeline';
+import { EmergencyModal } from './components/EmergencyModal';
 import { MentalHealthModule } from './components/MentalHealthModule';
 import { FamilyTestsModule } from './components/FamilyTestsModule';
 import { ParentingModule } from './components/ParentingModule';
@@ -12,10 +19,12 @@ import { AcademyModule } from './components/AcademyModule';
 import { CommunityModule } from './components/CommunityModule';
 import { GoalsTrackerModule } from './components/GoalsTrackerModule';
 import { AudioLibraryModule } from './components/AudioLibraryModule';
+import { MonetizationModule } from './components/MonetizationModule';
 import { ConsultantPanel } from './components/ConsultantPanel';
 import { AdminDashboard } from './components/AdminDashboard';
 import { LandingPage } from './components/LandingPage';
 import { UserProfileModal } from './components/UserProfileModal';
+import { MobileAccessModal } from './components/MobileAccessModal';
 import { MobileDeviceFrame } from './components/MobileDeviceFrame';
 import { INITIAL_USER } from './data/mockData';
 import { User, ActiveTab } from './types';
@@ -23,13 +32,15 @@ import { Bot, Sparkles, X, Heart, ShieldCheck } from 'lucide-react';
 
 export function App() {
   const [currentUser, setCurrentUser] = useState<User>(INITIAL_USER);
-  const [activeTab, setActiveTab] = useState<ActiveTab>('counseling');
+  const [activeTab, setActiveTab] = useState<ActiveTab>('companion-journey');
   const [activeSystem, setActiveSystem] = useState<'web' | 'ios' | 'android' | 'landing' | 'consultant-panel' | 'admin'>('web');
   const [darkMode, setDarkMode] = useState<boolean>(false);
   
-  // Floating Anis Chatbot Modal State
+  // Floating Anis Chatbot & Emergency Modal State
   const [isAnisFloatingOpen, setIsAnisFloatingOpen] = useState<boolean>(false);
   const [isProfileOpen, setIsProfileOpen] = useState<boolean>(false);
+  const [isEmergencyOpen, setIsEmergencyOpen] = useState<boolean>(false);
+  const [isMobileModalOpen, setIsMobileModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     if (darkMode) {
@@ -41,6 +52,31 @@ export function App() {
 
   const renderContent = () => {
     switch (activeTab) {
+      case 'companion-journey':
+        return (
+          <CompanionJourney
+            user={currentUser}
+            onNavigateToConsultants={(specialty) => setActiveTab('counseling')}
+            onOpenEmergency={() => setIsEmergencyOpen(true)}
+            onNavigateToDashboard={() => setActiveTab('family-dashboard')}
+          />
+        );
+      case 'family-dashboard':
+        return (
+          <FamilyDashboard
+            user={currentUser}
+            onNavigateToTab={(tab) => setActiveTab(tab as ActiveTab)}
+            onOpenEmergency={() => setIsEmergencyOpen(true)}
+          />
+        );
+      case 'relationship-analysis':
+        return <RelationshipAnalysis />;
+      case 'couples-mode':
+        return <CouplesMode />;
+      case 'child-profile':
+        return <ChildProfileModule />;
+      case 'family-timeline':
+        return <FamilyTimeline />;
       case 'counseling':
         return <CounselingModule user={currentUser} />;
       case 'ai-assistant':
@@ -63,8 +99,22 @@ export function App() {
         return <GoalsTrackerModule user={currentUser} />;
       case 'audio-library':
         return <AudioLibraryModule />;
+      case 'monetization':
+        return (
+          <MonetizationModule
+            user={currentUser}
+            onUpdateUser={(updated) => setCurrentUser(updated)}
+          />
+        );
       default:
-        return <CounselingModule user={currentUser} />;
+        return (
+          <CompanionJourney
+            user={currentUser}
+            onNavigateToConsultants={() => setActiveTab('counseling')}
+            onOpenEmergency={() => setIsEmergencyOpen(true)}
+            onNavigateToDashboard={() => setActiveTab('family-dashboard')}
+          />
+        );
     }
   };
 
@@ -177,6 +227,7 @@ export function App() {
           onToggleDarkMode={() => setDarkMode(!darkMode)}
           onOpenProfile={() => setIsProfileOpen(true)}
           onOpenAnisModal={() => setIsAnisFloatingOpen(true)}
+          onOpenMobileModal={() => setIsMobileModalOpen(true)}
         />
 
         {/* Dynamic Main View */}
@@ -230,6 +281,23 @@ export function App() {
           setDarkMode={setDarkMode}
         />
       )}
+
+      {/* Emergency Modal Overlay */}
+      {isEmergencyOpen && (
+        <EmergencyModal
+          onClose={() => setIsEmergencyOpen(false)}
+          onBookEmergencyConsultant={() => {
+            setIsEmergencyOpen(false);
+            setActiveTab('counseling');
+          }}
+        />
+      )}
+
+      {/* Mobile Access QR & Instructions Modal */}
+      <MobileAccessModal
+        isOpen={isMobileModalOpen}
+        onClose={() => setIsMobileModalOpen(false)}
+      />
 
     </div>
   );

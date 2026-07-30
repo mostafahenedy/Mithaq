@@ -20,10 +20,13 @@ import {
   FileText,
   Search,
   ChevronRight,
-  Headphones
+  Headphones,
+  Mail,
+  Send
 } from 'lucide-react';
 import { Consultant, Appointment, User as UserType } from '../types';
 import { MOCK_CONSULTANTS, MOCK_APPOINTMENTS } from '../data/mockData';
+import { sendEmailNotification } from '../services/notificationService';
 
 interface CounselingModuleProps {
   user: UserType;
@@ -83,21 +86,46 @@ export const CounselingModule: React.FC<CounselingModuleProps> = ({ user }) => {
 
     setAppointmentsList([newApp, ...appointmentsList]);
     setIsBookingSuccess(true);
+
+    // Trigger automated email notification to consultant
+    sendEmailNotification({
+      type: 'new_booking',
+      consultantName: bookingConsultant.name,
+      recipientEmail: 'consultant@mithaq.sa',
+      clientName: user.name,
+      sessionDetails: {
+        date: selectedDate,
+        time: selectedTime,
+        format: selectedFormat === 'voice' ? 'مكالمة صوتية' : selectedFormat === 'text' ? 'محادثة كتابية' : 'استشارة طارئة',
+        notes: bookingNotes || 'حجز استشارة ميثاق الأسرية'
+      }
+    });
+
     setTimeout(() => {
       setIsBookingSuccess(false);
       setBookingConsultant(null);
-    }, 2500);
+    }, 2800);
   };
 
   const handleSendLiveMessage = () => {
     if (!liveChatInput.trim()) return;
+    const msgContent = liveChatInput;
     const newMsg = {
       sender: user.name,
-      text: liveChatInput,
+      text: msgContent,
       time: new Date().toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' })
     };
     setLiveChatMessages([...liveChatMessages, newMsg]);
     setLiveChatInput('');
+
+    // Trigger automated email notification to consultant for new client message
+    sendEmailNotification({
+      type: 'new_message',
+      consultantName: activeLiveSession?.consultantName || 'المستشار',
+      recipientEmail: 'consultant@mithaq.sa',
+      clientName: user.name,
+      messageText: msgContent
+    });
 
     // Simulate response from consultant after 2 seconds
     setTimeout(() => {
@@ -302,7 +330,11 @@ export const CounselingModule: React.FC<CounselingModuleProps> = ({ user }) => {
                   ✓
                 </div>
                 <h4 className="font-extrabold text-lg text-slate-900 dark:text-white">تم حجز الموعد بنجاح!</h4>
-                <p className="text-xs text-slate-500">تم إرسال تفاصيل الموعد ورابط الجلسة المباشرة إلى حسابك والبريد الإلكتروني.</p>
+                <p className="text-xs text-slate-500">تم تسجيل الاستشارة وإرسال تفاصيل الموعد ورابط القاعة المباشرة إلى حسابك.</p>
+                <div className="p-3 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 rounded-2xl text-blue-900 dark:text-blue-200 text-xs font-bold flex items-center justify-center gap-2 max-w-sm mx-auto">
+                  <Mail className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                  <span>تم إرسال إشعار بريدي تلقائي فوراً للمستشار 📧</span>
+                </div>
               </div>
             ) : (
               <div className="space-y-4 text-xs">

@@ -19,7 +19,8 @@ import {
   MessageSquare,
   Award,
   Video,
-  Headphones
+  Headphones,
+  Crown
 } from 'lucide-react';
 import { ViewMode, User } from '../types';
 
@@ -36,6 +37,7 @@ interface NavbarProps {
   onToggleDarkMode?: () => void;
   onOpenProfile?: () => void;
   onOpenAnisModal?: () => void;
+  onOpenMobileModal?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -50,7 +52,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   darkMode = false,
   onToggleDarkMode,
   onOpenProfile,
-  onOpenAnisModal
+  onOpenAnisModal,
+  onOpenMobileModal
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
@@ -92,15 +95,15 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   const navTabs = [
-    { id: 'counseling', label: 'الاستشارات الأسرية', icon: HeartHandshake },
-    { id: 'audio-library', label: 'المحتوى الصوتي', icon: Headphones },
-    { id: 'parenting', label: 'تربية الأبناء', icon: BookOpen },
-    { id: 'marriage', label: 'الحياة الزوجية', icon: HeartHandshake },
-    { id: 'mental-health', label: 'الصحة النفسية', icon: Sparkles },
-    { id: 'academy', label: 'الأكاديمية والدورات', icon: Award },
-    { id: 'articles', label: 'المقالات والمكتبة', icon: BookOpen },
-    { id: 'tests', label: 'الاختبارات الأسرية', icon: Calendar },
-    { id: 'community', label: 'المجتمع الآمن', icon: MessageSquare }
+    { id: 'companion-journey', label: 'رحلة التفاهم (البداية)', icon: Sparkles },
+    { id: 'family-dashboard', label: 'لوحة تحكم الأسرة', icon: HeartHandshake },
+    { id: 'ai-assistant', label: 'مستشارك أنيس', icon: MessageSquare },
+    { id: 'counseling', label: 'مستشارو ميثاق', icon: UserCheck },
+    { id: 'relationship-analysis', label: 'تحليل الحوار', icon: Headphones },
+    { id: 'couples-mode', label: 'نمط الشريكين', icon: HeartHandshake },
+    { id: 'child-profile', label: 'ملف الأطفال', icon: BookOpen },
+    { id: 'family-timeline', label: 'سجل الأسرة', icon: Calendar },
+    { id: 'monetization', label: 'الاشتراكات والربح', icon: Crown }
   ];
 
   return (
@@ -224,6 +227,16 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
             <span>تحدث مع أنيس الذكي</span>
             <Sparkles className="w-3.5 h-3.5 text-[#C89B3C] group-hover:rotate-12 transition" />
+          </button>
+
+          {/* Mobile Access QR Button */}
+          <button
+            onClick={() => onOpenMobileModal?.()}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-200/60 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition text-xs font-bold"
+            title="الفتح عبر الجوال"
+          >
+            <Smartphone className="w-4 h-4 text-[#0F5C5A] dark:text-[#C89B3C]" />
+            <span className="hidden xl:inline">الفتح عبر الجوال</span>
           </button>
 
           {/* Dark Mode Toggle */}

@@ -3,8 +3,14 @@ export type ThemeMode = 'light' | 'dark';
 export type ViewMode = 'landing' | 'app' | 'mobile' | 'consultant-panel' | 'admin-panel' | 'ai-anis-focus';
 
 export type ActiveTab = 
-  | 'counseling' 
+  | 'companion-journey'
+  | 'family-dashboard'
   | 'ai-assistant' 
+  | 'counseling' 
+  | 'relationship-analysis'
+  | 'couples-mode'
+  | 'child-profile'
+  | 'family-timeline'
   | 'audio-library'
   | 'mental-health' 
   | 'tests' 
@@ -13,7 +19,8 @@ export type ActiveTab =
   | 'articles' 
   | 'academy' 
   | 'community' 
-  | 'goals';
+  | 'goals'
+  | 'monetization';
 
 export type UserRole = 'user' | 'consultant' | 'admin';
 export type SubscriptionTier = 'free' | 'plus' | 'premium' | 'vip';
@@ -217,4 +224,49 @@ export interface ChatMessage {
   sources?: string[];
   suggestedActions?: string[];
   isAudioPlaying?: boolean;
+}
+
+export interface ChildProfile {
+  id: string;
+  name: string;
+  age: number;
+  gender: 'boy' | 'girl';
+  schoolStage: string;
+  traits: string[];
+  habits: string[];
+  strengths: string[];
+  challenges: string[];
+  notes: string;
+}
+
+export interface CouplesAssessment {
+  spouseName: string;
+  isSpouseJoined: boolean;
+  inviteCode: string;
+  compatibilityScore: number;
+  communicationIndex: number;
+  strengths: string[];
+  weaknesses: string[];
+  improvementPlan: string[];
+}
+
+export interface FamilyTimelineEvent {
+  id: string;
+  date: string;
+  timeAgo: string;
+  type: 'resolution' | 'session' | 'exercise' | 'mood_shift' | 'appointment' | 'milestone';
+  title: string;
+  description: string;
+  statusTag?: string;
+}
+
+export interface RelationshipAnalysisResult {
+  id: string;
+  date: string;
+  rawInput: string;
+  emotions: { emotion: string; percentage: number; color: string }[];
+  tensionScore: number;
+  misunderstandings: string[];
+  aggressiveWording: { text: string; softerAlternative: string }[];
+  recommendations: string[];
 }
